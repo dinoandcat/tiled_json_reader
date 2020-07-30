@@ -6,22 +6,28 @@ import 'package:tiledjsonreader/map/tile_set_detail.dart';
 import 'package:tiledjsonreader/util/extensions.dart';
 
 class TiledMap {
-  int compressionLevel;
-  int height;
-  bool infinite;
-  List<MapLayer> layers;
-  int nextLayerId;
-  int nextObjectId;
+  double version;
+  String tiledVersion;
   String orientation;
   String renderOrder;
-  String tiledVersion;
-  int tileHeight;
-  List<TileSetDetail> tileSets;
-  int tileWidth;
-  String type;
-  double version;
+  int compressionLevel;
   int width;
+  int height;
+  int tileWidth;
+  int tileHeight;
+  //hexsidelength: Only for hexagonal maps. Determines the width or height (depending on the staggered axis) of the tile’s edge, in pixels.
+  //staggeraxis: For staggered and hexagonal maps, determines which axis (“x” or “y”) is staggered. (since 0.11)
+  //staggerindex: For staggered and hexagonal maps, determines whether the “even” or “odd” indexes along the staggered axis are shifted. (since 0.11)
+  //backgroundcolor: The background color of the map. (optional, may include alpha value since 0.15 in the form #AARRGGBB. Defaults to fully transparent.)
+  int nextLayerId;
+  int nextObjectId;
+  bool infinite;
+  //Can contain at most one: <properties>
 
+  List<TileSetDetail> tileSets;
+  List<MapLayer> layers;
+  String type;
+  //TODO Can contain any number:  <objectgroup>, <imagelayer>, <group> (since 1.0), <editorsettings> (since 1.3)
   TiledMap(
       {this.compressionLevel,
       this.height,
