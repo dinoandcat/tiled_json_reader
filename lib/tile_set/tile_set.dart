@@ -1,20 +1,29 @@
 import 'package:tiledjsonreader/tile_set/tile_set_item.dart';
 
 class TileSet {
+  String name;
+  double tileWidth;
+  double tileHeight;
+  double spacing;
+  double margin;
+  int tileCount;
   int columns;
+
+  //objectalignment: Controls the alignment for tile objects. Valid values are unspecified, topleft, top, topright,
+  // left, center, right, bottomleft, bottom and bottomright. The default value is unspecified, for compatibility
+  // reasons. When unspecified, tile objects use bottomleft in orthogonal mode and bottom in isometric mode. (since 1.4)
+
+  // 1.4version the image is an image object
   String image;
   double imageHeight;
   double imageWidth;
-  double margin;
-  String name;
-  double spacing;
-  int tileCount;
-  String tiledVersion;
-  double tileHeight;
-  List<TileSetItem> tiles;
-  double tileWidth;
   String type;
+
+  //Can contain at most one: <image>, <tileoffset>, <grid> (since 1.0), <properties>, <terraintypes>, <wangsets> (since 1.1),
+  String tiledVersion;
   double version;
+
+  List<TileSetItem> tiles;
 
   TileSet(
       {this.columns,
