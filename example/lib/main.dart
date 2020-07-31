@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:tiledjsonreader/tile_set/tile_set_item.dart';
 import 'package:tiledjsonreader/tiledjsonreader.dart';
 
 void main() {
@@ -46,9 +49,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadMap() {
-    TiledJsonReader tiled = TiledJsonReader('assets/mapa1.json');
+//    TiledJsonReader tiled = TiledJsonReader('assets/mapa1.json');
+    TiledJsonReader tiled = TiledJsonReader('assets/test_tileset.json');
     tiled.read().then((value) {
-      print(value);
+
+      log(jsonEncode(value).toString(), name: "load map");
+      log("\n");
+      log("\n");
+      TileSetItem item = value.getTileByGID(244);
+      TileSetItem item1 = value.getTileByGID(255);
+      TileSetItem item2 = value.getTileByGID(250);
+      log(jsonEncode(item.toJson()).toString(),name: "first");
+      log(jsonEncode(item1.toJson()).toString(),name: "player");
+      log(jsonEncode(item2.toJson()).toString(),name: "second");
     });
   }
 }
