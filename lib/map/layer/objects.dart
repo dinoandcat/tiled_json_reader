@@ -1,4 +1,7 @@
+import 'package:tiledjsonreader/tile_set/polygon.dart';
+
 class Objects {
+
   double height;
   int id;
   String name;
@@ -8,9 +11,21 @@ class Objects {
   double width;
   double x;
   double y;
+  int gid; // A reference to a tile. (optional)
+
+  //TODO Can contain at most one: <properties>,<text> (since 1.0),<polyline>,
+
+  // <ellipse> (since 0.9),
+  bool ellipse;
+  // <point> (since 1.1),
+  bool point;
+  // <polygon>,
+  List<Polygon> polygon;
 
   Objects(
-      {this.height,
+      {this.ellipse,
+      this.point,
+      this.height,
       this.id,
       this.name,
       this.rotation,
@@ -18,7 +33,8 @@ class Objects {
       this.visible,
       this.width,
       this.x,
-      this.y});
+      this.y,
+      this.gid});
 
   Objects.fromJson(Map<String, dynamic> json) {
     height = double.parse(json['height'].toString());
@@ -30,6 +46,15 @@ class Objects {
     width = double.parse(json['width'].toString());
     x = double.parse(json['x'].toString());
     y = double.parse(json['y'].toString());
+    gid = json['gid'];
+    ellipse = json['ellipse'] ?? false;
+    point = json['point'] ?? false;
+    if (json['polygon'] != null) {
+      polygon = new List<Polygon>();
+      json['polygon'].forEach((v) {
+        polygon.add(new Polygon.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +68,12 @@ class Objects {
     data['width'] = this.width;
     data['x'] = this.x;
     data['y'] = this.y;
+    data['gid'] = this.gid;
+    if (this.polygon != null) {
+      data['polygon'] = this.polygon.map((v) => v.toJson()).toList();
+    }
+    data['ellipse']=this.ellipse;
+    data['point']=this.point;
     return data;
   }
 }
