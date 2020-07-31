@@ -4,11 +4,14 @@ import 'package:tiledjsonreader/tile_set/tile_set_object_group.dart';
 class TileSetItem {
   int id;
   String type;
+  //Can contain at most one: <properties>, <image> (since 0.9), <objectgroup>, <animation>
   List<FrameAnimation> animation;
   TileSetObjectGroup objectGroup;
 
   TileSetItem({this.id, this.objectGroup});
-
+  TileSetItem.emptyTile(){
+    id=0;
+  }
   TileSetItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     type = json['type'];
@@ -29,6 +32,9 @@ class TileSetItem {
     data['type'] = this.type;
     if (this.objectGroup != null) {
       data['objectgroup'] = this.objectGroup.toJson();
+    }
+    if(this.animation!=null){
+      data["animation"]=animation.map((frameAnimation) => frameAnimation.toJson()).toList();
     }
     return data;
   }
