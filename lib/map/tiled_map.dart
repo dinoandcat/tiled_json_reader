@@ -3,6 +3,7 @@ import 'package:tiledjsonreader/map/layer/object_group.dart';
 import 'package:tiledjsonreader/map/layer/tile_layer.dart';
 import 'package:tiledjsonreader/map/layer/type_layer.dart';
 import 'package:tiledjsonreader/map/tile_set_detail.dart';
+import 'package:tiledjsonreader/tile_set/tile_set_item.dart';
 import 'package:tiledjsonreader/util/extensions.dart';
 
 class TiledMap {
@@ -15,6 +16,7 @@ class TiledMap {
   int height;
   int tileWidth;
   int tileHeight;
+
   //hexsidelength: Only for hexagonal maps. Determines the width or height (depending on the staggered axis) of the tile’s edge, in pixels.
   //staggeraxis: For staggered and hexagonal maps, determines which axis (“x” or “y”) is staggered. (since 0.11)
   //staggerindex: For staggered and hexagonal maps, determines whether the “even” or “odd” indexes along the staggered axis are shifted. (since 0.11)
@@ -22,11 +24,13 @@ class TiledMap {
   int nextLayerId;
   int nextObjectId;
   bool infinite;
+
   //Can contain at most one: <properties>
 
   List<TileSetDetail> tileSets;
   List<MapLayer> layers;
   String type;
+
   //TODO Can contain any number:  <objectgroup>, <imagelayer>, <group> (since 1.0), <editorsettings> (since 1.3)
   TiledMap(
       {this.compressionLevel,
@@ -44,6 +48,16 @@ class TiledMap {
       this.type,
       this.version,
       this.width});
+
+  TileSetItem getTileByGID(int gid) {
+    if (gid == 0) {
+      return TileSetItem.emptyTile();
+    }
+    var ts = tileSets.lastWhere((tileset) => tileset.firsTgId <= gid);
+    //layers:objects:[{"gid":244,}]
+    //tilesets:[{"firstgid":244,tiles:[{ "id":0}]}]
+    return ts.tileSet.tiles.singleWhere((item) => item.id == gid - ts.firsTgId);
+  }
 
   TiledMap.fromJson(Map<String, dynamic> json) {
     compressionLevel = json['compressionlevel'];
