@@ -23,18 +23,25 @@ class TiledJsonReader {
   Future<TiledMap> read() async {
     String data = await rootBundle.loadString(pathFile);
     Map<String, dynamic> _result = jsonDecode(data);
-    _map = TiledMap.fromJson(_result);
-    await Future.forEach(_map.tileSets, (tileSet) async {
-      if (!tileSet.source.contains('.json')) {
-        throw Exception('Invalid TileSet source: only supports json files');
-      }
-      String data =
-          await rootBundle.loadString('$_basePathFile${tileSet.source}');
-      if (data != null) {
-        Map<String, dynamic> _result = jsonDecode(data);
-        tileSet.tileSet = TileSet.fromJson(_result);
-      }
-    });
+    TiledMap _map = TiledMap.fromJson(_result);
+    List<dynamic> _tileSetsResults = _result["tilesets"];
+    // the tileset can embed in the map, when  this selected the tileset's source will be null
+    for (var i = 0; i < _map.tileSets.length; i++) {
+      await Future.sync(() async {
+        if (_map.tileSets[i].source == null) {
+          _map.tileSets[i].tileSet = TileSet.fromJson(_tileSetsResults[i]);
+        } else if (!_map.tileSets[i].source.contains('.json')) {
+          throw Exception('Invalid TileSet source: only supports json files');
+        } else {
+          data = await rootBundle.loadString('$_basePathFile${_map.tileSets[i].source}');
+          if (data != null) {
+            Map<String, dynamic> _result = jsonDecode(data);
+            _map.tileSets[i].tileSet = TileSet.fromJson(_result);
+          }
+        }
+      });
+    }
+
     return Future.value(_map);
   }
 }
